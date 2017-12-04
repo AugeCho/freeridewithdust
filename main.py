@@ -14,7 +14,7 @@ class MainPage(webapp2.RequestHandler):
         f = urlopen(
             'http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getCtprvnMesureLIst?itemCode=PM25&dataGubun=HOUR&searchCondition=WEEK&pageNo=1&numOfRows=30&_returnType=json&ServiceKey=hFfytrBnh8rAAckaVVfx4io3JRk4hFurd5sM4SUf5Fhnea2dOVy8rUlJrHBxN%2BuZYe5vWIvd0g9NldVJu8Bd3g%3D%3D')
         data = json.load(f)
-        values = [int(row['seoul']) for row in data['list'] if '16:00' > row['dataTime'].split()[1] > '00:00']
+        values = [int(row['seoul']) for row in data['list'] if '16:00' > row['dataTime'].split()[1] > '00:00' and row['seoul'] != '']
         average = sum(values) / len(values)
         return average
 
