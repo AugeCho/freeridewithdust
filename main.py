@@ -12,14 +12,16 @@ class MainPage(webapp2.RequestHandler):
         return str(datetime.datetime.now()).split(' ')[0]
     def get_average(self):
         f = urlopen(
-            'http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getCtprvnMesureLIst?itemCode=PM25&dataGubun=HOUR&searchCondition=WEEK&pageNo=1&numOfRows=30&_returnType=json&ServiceKey=hFfytrBnh8rAAckaVVfx4io3JRk4hFurd5sM4SUf5Fhnea2dOVy8rUlJrHBxN%2BuZYe5vWIvd0g9NldVJu8Bd3g%3D%3D')
+            'http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getCtprvnMesureLIst?itemCode=PM25&dataGubun=HOUR&searchCondition=WEEK&pageNo=1&numOfRows=30&_returnType=json&ServiceKey={key}'.format(key=OPEN_AIR_KEY))
         data = json.load(f)
         values = [int(row['seoul']) for row in data['list'] if '16:00' > row['dataTime'].split()[1] > '00:00' and row['seoul'] != '']
         average = sum(values) / len(values)
         return average
 
     def get_forecast(self):
-        f = urlopen('http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getMinuDustFrcstDspth?searchDate={0}&InformCode=PM25&_returnType=json&ServiceKey=hFfytrBnh8rAAckaVVfx4io3JRk4hFurd5sM4SUf5Fhnea2dOVy8rUlJrHBxN%2BuZYe5vWIvd0g9NldVJu8Bd3g%3D%3D'.format(self.get_time()))
+        f = urlopen('http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getMinuDustFrcstDspth?searchDate={0}&InformCode=PM25&_returnType=json&ServiceKey={key}'.format(
+            tomorrow=self.get_time(); key=OPEN_AIR_KEY
+        ))
         data = json.load(f)
         s = data['list'][0]['informGrade']
         grade = s.split(',')[0].split(':')[1].strip()
